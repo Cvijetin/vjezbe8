@@ -6,7 +6,9 @@ import {
   StyleSheet,
   ActivityIndicator,
   FlatList,
+  Image
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export function HomeScreen({ route, navigation }) {
   const [isLoading, setLoading] = useState(true);
@@ -14,9 +16,9 @@ export function HomeScreen({ route, navigation }) {
 
   const getMovies = async () => {
     try {
-      const response = await fetch("https://reactnative.dev/movies.json");
+      const response = await fetch("https://api.sampleapis.com/beers/ale");
       const json = await response.json();
-      setData(json.movies);
+      setData(json);
     } catch (error) {
       console.error(error);
     } finally {
@@ -33,6 +35,7 @@ export function HomeScreen({ route, navigation }) {
   }
 
   return (
+    <ScrollView>
     <View style={styles.screen}>
       <Button
         title="Go to the Settings screen!"
@@ -46,14 +49,24 @@ export function HomeScreen({ route, navigation }) {
             data={data}
             keyExtractor={({ id }, index) => id}
             renderItem={({ item }) => (
-              <Text>
-                {item.title}, {item.releaseYear}
-              </Text>
+              <View>
+                <Image
+                   style={styles.tinyLogo}
+                   source={{uri: `${item.image}`
+                  }}
+                />
+                <Text style={styles.prettyText}>
+                  {"\n"}
+                  {item.name} : {item.price} 
+                  {"\n"}
+                </Text>
+              </View>
             )}
           />
         )}
       </View>
     </View>
+    </ScrollView>
   );
 }
 
@@ -63,4 +76,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     //justifyContent: "center",
   },
+  tinyLogo: {
+    width:50,
+    height:50,
+  },
+  prettyText:{
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "bold"
+  }
 });
